@@ -1,34 +1,37 @@
 #application{
-	width: 640px;
-	height: 480px;
+	width: 1000px;
+	height: auto;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: auto;
-	border: black 1px solid;
-	border-radius: 5px;
+	
 
 }
 
 .planeContainer{
-	border: black 1px solid;
+	//border: black 1px solid;
 	width:100%
 }
 
 #left{
-	width:150px;
-	height: 480px;
+	//width:150px;
+	//height: 350px;
 	display: block;
 	float:left;
 }
 #center{
-	width:150px;
-	height:480px;
+	//width:250px;
+	//height: 350px;
 	display: block;
 	float:left;
 }
 #right{
-	width:150px;
-	height:480px;
+	//width:150px;
+	//height:350px;
+	display: block;
+	float:left;
+}
+#controll{
 	display: block;
 	float:left;
 }
