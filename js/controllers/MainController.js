@@ -34,14 +34,20 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
     this.margin_top = margin_top;
     this.base = base
   	this.isFalling = function(){
-  		return (this.currentPosition == 5);
+  		return ((this.currentPosition == 4) );
   	},
+    this.isFallingForLives = function(){
+      return (this.currentPosition == 4);
+    }
+    this.isRunning = function(){
+      return (this.running == true);
+    }
   	this.update = function(){
   		if (this.currentPosition == 5){
   			this.currentPosition = 0;
   			this.running = false;
   		}
-  		if (this.running){
+  		if (this.isRunning()){
   			this.currentPosition += 1;
   			this.currentImage = this.base+ "-" +this.currentPosition.toString()+".png";
   		}
@@ -51,6 +57,59 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
   		this.currentPosition = 0;
   	}
   }
+
+  function Grid(ingredients){
+    this.ingredients = ingredients;
+    this.init = function(){
+      var i = Math.floor(Math.random()*this.ingredients.length);
+      //ingredients[i].start();
+    }
+    this.getAvailableIngredient = function(){
+      var notRunning = []
+      for (var i = 0; i < this.ingredients.length; i++){
+        if (!this.ingredients[i].isRunning()){ notRunning.push(i);}
+      }
+      if (notRunning.length == 0){
+        return null;
+      }
+      else{
+        //console.log(notRunning);
+        return Math.random() < 0.7 ? notRunning[Math.floor(Math.random()*notRunning.length)] : null;
+      }
+    },
+    this.startIngredient = function(i){
+      ingredients[i].start();
+    },
+    this.update = function(){
+      var toStart = this.getAvailableIngredient();
+      //console.log("toStart", toStart);
+      if (toStart != null){
+        this.startIngredient(toStart);
+      }
+      for (var i = 0; i < this.ingredients.length; i++){
+        ingredients[i].update();
+      }
+    },
+    this.getFalling = function(){
+      var falling = null;
+      for (var i = 0; i < this.ingredients.length; i++){
+        if (this.ingredients[i].isFalling()){
+          return i;
+        }
+      }
+      return null;
+    }
+    this.getFallingForLives = function(){
+      var falling = null;
+      for (var i = 0; i < this.ingredients.length; i++){
+        if (this.ingredients[i].isFallingForLives()){
+          return i;
+        }
+      }
+      return null;
+    }
+
+  }
   
   $scope.jeera= new Ingredient("img/graphic/jeera-1.png", 1, "0px", "img/graphic/jeera");
   $scope.aloo = new Ingredient("img/graphic/aloo-1.png", 1, "-67px", "img/graphic/aloo");
@@ -58,58 +117,91 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
   $scope.paratha = new Ingredient("img/graphic/paratha-1.png", 1, "0px", "img/graphic/paratha");
 
   ingredients = [$scope.jeera, $scope.aloo, $scope.paneer, $scope.paratha];
-  getLevel = function(score){
-    var levels = [-1, -1, -1, 10, 20];
-    var i = 0;
-    while ((i < levels.length) && (score > levels[i])){
-      i++;
-    }
-    return i;
-  }
-  running = [0, 0, 0, 0];
-  var toStart = 1;
+  grid = new Grid(ingredients);
+
   $scope.score = 0;
+  $scope.lives = 3;
+  $scope.won = 0;
+  $scope.lost = 0;
+  $scope.level = 0;
+  $scope.interval = 1700;
   $scope.play = function(){
-  	redraw = $interval(function(){
-      var level = getLevel($scope.score);
-      console.log(level);
-  		if (toStart > 0){
-  			ingredients[running.indexOf(0)].start();
-  			running[running.indexOf(0)] = 1;
-  			toStart--;
-  		}
-  		var totalRunning = 0
-  		for (var i = 0; i < 4; i++){
-  			if (running[i]){
-  				if (ingredients[i].isFalling()){
-  					updateScore(i);
-  					running[i] = 0;
-  				}
-  				else{
-  					ingredients[i].update();
-  					totalRunning++;
-  				}	
-  			}
-  		}
-  		if (totalRunning < level){
-  			toStart = level - totalRunning;
-  		}	
-  	}, 1000);
+    grid.init();
+  	var redraw = $interval(loop, $scope.interval);
+
+    /*
+    $scope.$watch("level", function(){
+      $interval.cancel(redraw);
+      console.log($scope.interval);
+      redraw = $interval(loop, $scope.interval - 100*$scope.level);
+    });
+
+    $scope.$watch("won", function(){
+      $interval.cancel(redraw);
+    });
+
+    $scope.$watch("lost", function(){
+      $interval.cancel(redraw);
+    });
+*/
   };
 
-  updateScore = function(i){
-    if ((i == 0) && ($scope.position.horizontal == 0) && ($scope.position.vertical == 1)){
-      $scope.score++;
+  function loop(){
+    if (getScoreUpdate(grid.getFalling())){
+      $scope.score ++;
+      $scope.won = checkIfWon();
+      $scope.level = updateLevel();
     }
-    if ((i == 1) && ($scope.position.horizontal == 0) && ($scope.position.vertical == 0)){
-      $scope.score++;
+    else{
+      updateLives(grid.getFallingForLives());
+      $scope.lost = checkIfLost();
     }
-    if ((i == 2) && ($scope.position.horizontal == 1) && ($scope.position.vertical == 0)){
-      $scope.score++;
+    console.log("gonna update the grid");
+    grid.update();
+  }
+
+  function checkIfWon(){
+    return ($scope.score == 50);
+  }
+  function checkIfLost(){
+    return ($scope.lives == 0);
+  }
+  function updateLevel(){
+    if ($scope.score % 10 == 0){
+      return ++$scope.level;
     }
-    if ((i == 1) && ($scope.position.horizontal == 1) && ($scope.position.vertical == 1)){
-      $scope.score++;
+    else{
+      return $scope.level;
     }
   }
 
+  getScoreUpdate = function(i){
+    if ((i == 0) && ($scope.position.horizontal == 0) && ($scope.position.vertical == 1)){
+      return 1;
+    }
+    if ((i == 1) && ($scope.position.horizontal == 0) && ($scope.position.vertical == 0)){
+      return 1;
+    }
+    if ((i == 2) && ($scope.position.horizontal == 1) && ($scope.position.vertical == 0)){
+      return 1;
+    }
+    if ((i == 1) && ($scope.position.horizontal == 1) && ($scope.position.vertical == 1)){
+      return 1;
+    }
+    return 0;
+  }
+  updateLives = function(i){
+    if ((i == 0) && (($scope.position.horizontal != 0) || ($scope.position.vertical != 1))){
+      $scope.lives--;
+    }
+    if ((i == 1) && (($scope.position.horizontal != 0) || ($scope.position.vertical != 0))){
+      $scope.lives--;
+    }
+    if ((i == 2) && (($scope.position.horizontal != 1) || ($scope.position.vertical != 0))){
+      $scope.lives--;
+    }
+    if ((i == 1) && (($scope.position.horizontal != 1) || ($scope.position.vertical != 1))){
+      $scope.lives--;
+    }
+  }
 }]);
