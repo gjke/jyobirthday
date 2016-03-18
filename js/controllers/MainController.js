@@ -1,4 +1,4 @@
-app.controller('MainController', ['$scope', '$interval', function($scope, $interval) { 
+app.controller('MainController', ['$scope', '$interval','$timeout', function($scope, $interval, $timeout) { 
   $scope.title = 'Go Jyotsna';
   $scope.position = {
   	vertical: 0,
@@ -26,6 +26,7 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
   };
   $scope.figureImages = [["img/graphic/5-2.png", "img/graphic/5-1.png"], ["img/graphic/5-4.png", "img/graphic/5-3.png"]];
   $scope.figureImageSource = $scope.figureImages[0][0];
+  $scope.livesImages = ["img/wp.jpg", "img/wp.jpg", "img/wp.jpg"];
   
   function Ingredient(currentImage, currentPosition, margin_top, base){
   	this.currentImage = currentImage;
@@ -46,10 +47,13 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
   		if (this.currentPosition == 5){
   			this.currentPosition = 0;
   			this.running = false;
+        //asdasda
   		}
   		if (this.isRunning()){
   			this.currentPosition += 1;
+
   			this.currentImage = this.base+ "-" +this.currentPosition.toString()+".png";
+        console.log(this.currentImage);
   		}
   	},
   	this.start = function(){
@@ -82,7 +86,7 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
     },
     this.update = function(){
       var toStart = this.getAvailableIngredient();
-      //console.log("toStart", toStart);
+      console.log("toStart", toStart);
       if (toStart != null){
         this.startIngredient(toStart);
       }
@@ -127,15 +131,15 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
   $scope.interval = 1700;
   $scope.play = function(){
     grid.init();
-  	var redraw = $interval(loop, $scope.interval);
+  	setTimeout(loop, $scope.interval);
+    
+    //var redraw = $interval(loop, $scope.interval);
 
-    /*
     $scope.$watch("level", function(){
-      $interval.cancel(redraw);
       console.log($scope.interval);
-      redraw = $interval(loop, $scope.interval - 100*$scope.level);
+      $scope.interval = $scope.interval - 100*$scope.level;
     });
-
+    /*
     $scope.$watch("won", function(){
       $interval.cancel(redraw);
     });
@@ -143,7 +147,7 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
     $scope.$watch("lost", function(){
       $interval.cancel(redraw);
     });
-*/
+  */
   };
 
   function loop(){
@@ -158,6 +162,8 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
     }
     console.log("gonna update the grid");
     grid.update();
+
+    $timeout(loop, $scope.interval);
   }
 
   function checkIfWon(){
@@ -167,7 +173,7 @@ app.controller('MainController', ['$scope', '$interval', function($scope, $inter
     return ($scope.lives == 0);
   }
   function updateLevel(){
-    if ($scope.score % 10 == 0){
+    if ($scope.score % 1 == 0){
       return ++$scope.level;
     }
     else{
