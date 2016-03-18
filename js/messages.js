@@ -24,6 +24,11 @@ messages = {
 			"author": "Ranveer Singh",
 			"message": "Hey baby, wanna dance?",
 			"img": "img/faces/ranveer.jpg"
+		},
+		{
+			"author": "Sergii",
+			"message": "Niiice! Finally we get to taste some Jeera-Allo-Paneer-Paratha after years of begging. Now go get your prize!",
+			"img": "img/faces/sergii.jpg"
 		}
 	],
 	"bad": [
@@ -33,30 +38,26 @@ messages = {
 			"img": "img/faces/karoline.jpg"
 		},
 		{
-			"author": "Karoline",
-			"message": "Would you like to discuss Van Gogh with an art history enthusiast?",
-			"img": "img/faces/karoline.jpg"
-		},
-		{
 			"author": "Sofia",
 			"message": "You can't even catch a potato. Maybe you caught jyotsnitis?",
 			"img": "img/faces/sofia.jpg"
+		},
+		{
+			"author": "Karoline",
+			"message": "Would you like to discuss Van Gogh with an art history enthusiast?",
+			"img": "img/faces/karoline.jpg"
 		}
 
 	],
-	"won": {
-		"author": "Sergii",
-		"message": "Niiice! Finally we get to taste some Jeera-Allo-Paneer-Paratha after years of begging. Now go get your prize!",
-		"img": "img/faces/sergii.jpg"
-	},
+	
 	"lost":{
 		"author": "Sergii",
 		"message": "Du Gurke! What are you? Exhausted? Try again!",
-		"img": "sergii.jpg"
+		"img": "img/faces/sergii.jpg"
 	},
 	"start": {
 		"author": "Sergii",
-		"message": "Auf geht's. Catch all the ingredients for the best Jeera-Allo-Paneer-Paratha and try not to lose all your work permits",
-		"img": "sergii.jpg"
+		"message": "Auf geht's. Catch all the ingredients for the best Jeera-Aloo-Paneer-Paratha and try not to lose all your work permits. Press Start when you are ready.",
+		"img": "img/faces/sergii.jpg"
 	}
 }

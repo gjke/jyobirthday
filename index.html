@@ -7,19 +7,25 @@
   	<link href='https://fonts.googleapis.com/css?family=Alegreya+Sans+SC' rel='stylesheet' type='text/css'>
   	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   	<script src="js/vendors/angular.min.js"></script>
+  	<script src="js/vendors/angular-animate.min.js"></script>
+  	<script src="js/vendors/scrollglue.js"></script>
+  	<script src="js/vendors/focusif.min.js"></script>
 </head>
 <body ng-app="birthdayApp">
-	<div id="application" ng-controller="MainController" ng-keydown="figureControll($event)" tabindex="0">
+	<div id="application" ng-controller="MainController" ng-keydown="figureControll($event)" tabindex="0" focus-if="playing">
 		<div id="left">
+
 			<div class="planeContainer">
 				<plane ingredient="jeera"></plane>
 			</div>
 			<div class="planeContainer">
 				<plane ingredient="aloo"></plane>
 			</div>
+
 		</div>
 		<div id="center">
-			<img ng-src="{{figureImageSource}}" >
+
+			<img ng-src="{{figureImageSource}}">
 			
 		</div>
 		<div id="right">
@@ -29,21 +35,26 @@
 			<div class="planeContainer">
 				<plane ingredient="paneer"></plane>
 			</div>
-		</div>
-		<div id="controll">
-			<div id="messenger">
-			</div>
-			<div id="lives">
+			<div id="score">{{score}}</div>
+			<div id="lives" style="float:right; margin-top: 50px;">
 				<lives images="livesImages"></lives>
 			</div>
-			<div id="buttons">
-			</div>	
-			<button type="button" data-ng-click="play()">Start</button>
-			<span>{{score}}</span><br />
-			<span>{{lives}}</span>
 		</div>
+		<div id="controll">
+
+			<div id="messenger">
+				<messenger messages="messenger.messages"></messenger>
+			</div>
+			<div id="buttons">
+				<button type="button" class="button_sliding_bg" data-ng-click="play()" ng-Disabled="playing">Start</button>
+				<a type="button" class="button_sliding_bg" href="#" ng-Show="won">To Prize</button></a>
+			</div>	
+			
+		</div>
+		<div class="clearer"></div>
 	</div>
 
+<script src="js/messages.js"></script>
 
 <!--Modules -->
  <script src="js/app.js"></script>
@@ -54,4 +65,5 @@
  <!--Directives -->
  <script src="js/directives/plane.js"></script>
  <script src="js/directives/lives.js"></script>
+ <script src="js/directives/messenger.js"></script>
 </body>

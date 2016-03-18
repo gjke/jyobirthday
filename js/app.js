@@ -1,1 +1,1 @@
-var app = angular.module("birthdayApp", []);
+var app = angular.module("birthdayApp", ['ngAnimate', 'luegg.directives', 'focus-if']);

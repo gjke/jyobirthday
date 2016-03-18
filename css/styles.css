@@ -1,13 +1,22 @@
 #application{
-	width: 1000px;
-	height: auto;
+	width: 900px;
+	height: 350px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: auto;
+	margin-top: 200px;
 	
 
 }
 
+#score{
+	display:block;
+	text-align:right;
+	color: #373e4d;
+    font-family: helvetica,arial,sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    font-style: italic;
+}
 .planeContainer{
 	//border: black 1px solid;
 	width:100%
@@ -34,6 +43,115 @@
 #controll{
 	display: block;
 	float:left;
-	width:150px;
+	width:245px;
+	margin-left: 5px;
 }
 
+#messenger{
+	height: 300px;
+	//border: #373e4d 1px solid;
+}
+
+#lives{
+	position:relative;
+	bottom:0px;
+}
+#lives img{
+	margin-left:10px;
+}
+#messages{
+	height:300px;
+	overflow-y: scroll;
+}
+.message {
+	width:216px;
+	padding:5px;
+	position:relative;
+	height:auto;
+}
+.face{
+	width:30px;
+	display:block;
+	float:left;
+}
+.face img{
+	border-radius:2px;
+}
+.text{
+	width: 166px;
+	display:block;
+	float:left;
+	
+	margin-left:5px;
+	border: #d5d5d5 1px solid;
+	border-radius: 2px;
+	padding: 2px 4px;
+	
+}
+
+.text span{
+	font-size: 12px;
+	font-family: helvetica, arial, sans-serif;
+	color:#373e4d;
+}
+
+.ng-enter {
+  -webkit-transition: 1s;
+  transition: 1s;
+  
+ opacity: 0;
+}
+
+.ng-enter-active {
+ opacity: 1;
+}
+
+#buttons{
+	float:right;
+	margin-right:29px;
+}
+
+.button_sliding_bg {
+    color: #31302B;
+    background: #FFF;
+    padding: 12px 17px;
+    font-family: 'OpenSansBold', sans-serif;
+    border: 1px solid #d5d5d5;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    //box-shadow: inset 0 0 0 0 #31302B;
+	-webkit-transition: all ease 0.8s;
+	-moz-transition: all ease 0.8s;
+	transition: all ease 0.8s;
+}
+.button_sliding_bg:hover {
+    box-shadow: inset 100px 0 0 0 #d5d5d5;
+    color: #31302b;
+}
+
+.clearer { clear: both; }
+
+::-webkit-scrollbar {
+      width: 7px;
+}
+::-webkit-scrollbar-thumb{
+background-color: #d5d5d5;
+border-radius:10px;
+}
+::-webkit-scrollbar-thumb:hover{
+background-color:#31302b;
+border:1px solid #333333;
+}
+::-webkit-scrollbar-thumb:active{
+background-color:#31302b;
+border:1px solid #333333;
+} 
+
+*:focus {
+    outline: none;
+}

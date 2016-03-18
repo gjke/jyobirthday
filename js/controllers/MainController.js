@@ -1,4 +1,4 @@
-app.controller('MainController', ['$scope', '$interval','$timeout', function($scope, $interval, $timeout) { 
+app.controller('MainController', ['$scope', '$interval','$timeout', '$window', function($scope, $interval, $timeout, $window) { 
   $scope.title = 'Go Jyotsna';
   $scope.position = {
   	vertical: 0,
@@ -26,7 +26,19 @@ app.controller('MainController', ['$scope', '$interval','$timeout', function($sc
   };
   $scope.figureImages = [["img/graphic/5-2.png", "img/graphic/5-1.png"], ["img/graphic/5-4.png", "img/graphic/5-3.png"]];
   $scope.figureImageSource = $scope.figureImages[0][0];
-  $scope.livesImages = ["img/wp.jpg", "img/wp.jpg", "img/wp.jpg"];
+  $scope.livesImages = ["img/wp-60.jpg", "img/wp-60.jpg", "img/wp-60.jpg"];
+  Messenger = function(){
+    this.messages = [],
+    this.init = function(){
+      this.messages = [];
+    },
+    this.write = function(message){
+      this.messages.push(message);
+    }
+    this.gotToBottom = function(){
+
+    }
+  }
   
   function Ingredient(currentImage, currentPosition, margin_top, base){
   	this.currentImage = currentImage;
@@ -53,7 +65,6 @@ app.controller('MainController', ['$scope', '$interval','$timeout', function($sc
   			this.currentPosition += 1;
 
   			this.currentImage = this.base+ "-" +this.currentPosition.toString()+".png";
-        console.log(this.currentImage);
   		}
   	},
   	this.start = function(){
@@ -86,7 +97,6 @@ app.controller('MainController', ['$scope', '$interval','$timeout', function($sc
     },
     this.update = function(){
       var toStart = this.getAvailableIngredient();
-      console.log("toStart", toStart);
       if (toStart != null){
         this.startIngredient(toStart);
       }
@@ -114,40 +124,58 @@ app.controller('MainController', ['$scope', '$interval','$timeout', function($sc
     }
 
   }
-  
   $scope.jeera= new Ingredient("img/graphic/jeera-1.png", 1, "0px", "img/graphic/jeera");
   $scope.aloo = new Ingredient("img/graphic/aloo-1.png", 1, "-67px", "img/graphic/aloo");
   $scope.paneer = new Ingredient("img/graphic/paneer-1.png", 1, "-67px", "img/graphic/paneer");
   $scope.paratha = new Ingredient("img/graphic/paratha-1.png", 1, "0px", "img/graphic/paratha");
-
   ingredients = [$scope.jeera, $scope.aloo, $scope.paneer, $scope.paratha];
   grid = new Grid(ingredients);
-
+  grid.init();
+  $scope.messenger = new Messenger();
+  $timeout(function(){
+    $scope.messenger.init();
+    $scope.messenger.write(messages["start"]);
+  }, 2000);
+  $scope.interval = 1700;
   $scope.score = 0;
   $scope.lives = 3;
   $scope.won = 0;
   $scope.lost = 0;
   $scope.level = 0;
-  $scope.interval = 1700;
+  $scope.playing = 0;
+
   $scope.play = function(){
-    grid.init();
-  	setTimeout(loop, $scope.interval);
+    $scope.score = 0;
+    $scope.lives = 3;
+    $scope.won = 0;
+    $scope.lost = 0;
+    $scope.level = 0;
+    $scope.livesImages = ["img/wp-60.jpg", "img/wp-60.jpg", "img/wp-60.jpg"];
+    $scope.messenger.init();
+    $scope.messenger.write(messages["start"]);
+    $scope.playing = 1;
+    $scope.interval = 1700;
+  	loop();
     
     //var redraw = $interval(loop, $scope.interval);
 
     $scope.$watch("level", function(){
-      console.log($scope.interval);
-      $scope.interval = $scope.interval - 100*$scope.level;
+      $scope.interval = $scope.interval - 90*$scope.level;
     });
-    /*
+    
     $scope.$watch("won", function(){
-      $interval.cancel(redraw);
+      if ($scope.won == 1){
+        $scope.playing = 0;
+      }
     });
 
     $scope.$watch("lost", function(){
-      $interval.cancel(redraw);
+      if ($scope.lost == 1){
+        $scope.messenger.write(messages["lost"]);
+        $scope.playing = 0;
+      }
     });
-  */
+  
   };
 
   function loop(){
@@ -160,20 +188,22 @@ app.controller('MainController', ['$scope', '$interval','$timeout', function($sc
       updateLives(grid.getFallingForLives());
       $scope.lost = checkIfLost();
     }
-    console.log("gonna update the grid");
     grid.update();
 
-    $timeout(loop, $scope.interval);
+    if ((!$scope.won) && (!$scope.lost)){
+      $timeout(loop, $scope.interval);
+    }
   }
 
   function checkIfWon(){
-    return ($scope.score == 50);
+    return ($scope.score == 60);
   }
   function checkIfLost(){
     return ($scope.lives == 0);
   }
   function updateLevel(){
-    if ($scope.score % 1 == 0){
+    if (($scope.score > 0) && ($scope.score % 10 == 0)){
+      $scope.messenger.write(messages["good"][$scope.level]);
       return ++$scope.level;
     }
     else{
@@ -191,7 +221,7 @@ app.controller('MainController', ['$scope', '$interval','$timeout', function($sc
     if ((i == 2) && ($scope.position.horizontal == 1) && ($scope.position.vertical == 0)){
       return 1;
     }
-    if ((i == 1) && ($scope.position.horizontal == 1) && ($scope.position.vertical == 1)){
+    if ((i == 3) && ($scope.position.horizontal == 1) && ($scope.position.vertical == 1)){
       return 1;
     }
     return 0;
@@ -199,15 +229,25 @@ app.controller('MainController', ['$scope', '$interval','$timeout', function($sc
   updateLives = function(i){
     if ((i == 0) && (($scope.position.horizontal != 0) || ($scope.position.vertical != 1))){
       $scope.lives--;
+      $scope.livesImages[3-$scope.lives-1] = "img/wp-60-grey.jpg";
+      $scope.messenger.write(messages["bad"][3 - $scope.lives - 1]);
     }
     if ((i == 1) && (($scope.position.horizontal != 0) || ($scope.position.vertical != 0))){
       $scope.lives--;
+      $scope.livesImages[3-$scope.lives-1] = "img/wp-60-grey.jpg";
+      $scope.messenger.write(messages["bad"][3 - $scope.lives - 1]);
     }
     if ((i == 2) && (($scope.position.horizontal != 1) || ($scope.position.vertical != 0))){
       $scope.lives--;
+      $scope.livesImages[3-$scope.lives-1] = "img/wp-60-grey.jpg";
+      $scope.messenger.write(messages["bad"][3 - $scope.lives - 1]);
     }
-    if ((i == 1) && (($scope.position.horizontal != 1) || ($scope.position.vertical != 1))){
+    if ((i == 3) && (($scope.position.horizontal != 1) || ($scope.position.vertical != 1))){
       $scope.lives--;
+      $scope.livesImages[3-$scope.lives-1] = "img/wp-60-grey.jpg";
+      $scope.messenger.write(messages["bad"][3 - $scope.lives - 1]);
     }
+
   }
+
 }]);
