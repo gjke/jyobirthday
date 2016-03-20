@@ -46,8 +46,8 @@
 				<messenger messages="messenger.messages"></messenger>
 			</div>
 			<div id="buttons">
-				<button type="button" class="button_sliding_bg" data-ng-click="play()" ng-Disabled="playing">Start</button>
-				<a type="button" class="button_sliding_bg" href="#" ng-Show="won">To Prize</button></a>
+				<button type="button" class="button_sliding_bg" data-ng-click="play()" ng-Disabled="playing" ng-Show="!won">Start</button>
+				<a type="button" class="button_sliding_bg" href="#" ng-Show="won" style="text-decoration: none;">To The Prize</button></a>
 			</div>	
 			
 		</div>

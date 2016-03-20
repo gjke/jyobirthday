@@ -3,7 +3,7 @@
 	height: 350px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 200px;
+	margin-top: 100px;
 	
 
 }
@@ -130,7 +130,7 @@
 	transition: all ease 0.8s;
 }
 .button_sliding_bg:hover {
-    box-shadow: inset 100px 0 0 0 #d5d5d5;
+    box-shadow: inset 150px 0 0 0 #d5d5d5;
     color: #31302b;
 }
 
